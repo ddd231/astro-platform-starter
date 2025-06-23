@@ -160,14 +160,14 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="bg-black text-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <header className="bg-black text-white border-b">
+        <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Newspaper className="h-8 w-8" />
-              <h1 className="text-2xl font-bold tracking-tight">
+              <Newspaper className="h-7 w-7" />
+              <h1 className="text-xl font-bold font-serif tracking-tight">
                 {getUIText('siteTitle', '익명 뉴스')}
               </h1>
             </div>
@@ -186,25 +186,25 @@ export default function HomePage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Article Form */}
             {showForm && (
-              <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-                <h2 className="text-xl font-bold mb-4">
+              <div className="border-b border-gray-200 pb-6 mb-6">
+                <h2 className="text-2xl font-bold font-serif mb-4">
                   {getUIText('writeArticle', '새 기사 작성')}
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-800 mb-1">
                       {getUIText('category', '카테고리')}
                     </label>
                     <select
                       value={newArticle.category}
                       onChange={(e) => setNewArticle({...newArticle, category: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      className="w-full p-2 border border-gray-300 text-sm focus:outline-none focus:border-black"
                     >
                       {categories.slice(1).map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
@@ -212,26 +212,26 @@ export default function HomePage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-800 mb-1">
                       {getUIText('title', '제목')}
                     </label>
                     <input
                       type="text"
                       value={newArticle.title}
                       onChange={(e) => setNewArticle({...newArticle, title: e.target.value})}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 text-sm focus:outline-none focus:border-black"
                       placeholder={getUIText('titlePlaceholder', '기사 제목을 입력하세요')}
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-medium text-gray-800 mb-1">
                       {getUIText('content', '내용')}
                     </label>
                     <textarea
                       value={newArticle.content}
                       onChange={(e) => setNewArticle({...newArticle, content: e.target.value})}
-                      className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                      className="w-full p-3 border border-gray-300 text-sm focus:outline-none focus:border-black font-serif"
                       rows={6}
                       placeholder={getUIText('contentPlaceholder', '기사 내용을 입력하세요')}
                       required
@@ -240,14 +240,14 @@ export default function HomePage() {
                   <div className="flex space-x-3">
                     <button
                       type="submit"
-                      className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors"
+                      className="bg-red-600 text-white px-6 py-2 text-sm font-medium hover:bg-red-700 transition-colors"
                     >
                       {getUIText('publish', '발행')}
                     </button>
                     <button
                       type="button"
                       onClick={() => setShowForm(false)}
-                      className="bg-gray-500 text-white px-6 py-2 rounded-md hover:bg-gray-600 transition-colors"
+                      className="bg-gray-800 text-white px-6 py-2 text-sm font-medium hover:bg-gray-900 transition-colors"
                     >
                       {getUIText('cancel', '취소')}
                     </button>
@@ -257,15 +257,15 @@ export default function HomePage() {
             )}
 
             {/* Category Filter */}
-            <div className="flex flex-wrap gap-2 mb-6">
+            <div className="flex flex-wrap gap-1 mb-6 border-b border-gray-200 pb-4">
               {categories.map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  className={`px-3 py-1 text-sm font-medium transition-colors ${
                     selectedCategory === category
                       ? 'bg-red-600 text-white'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                      : 'text-gray-700 hover:text-red-600 border-b-2 border-transparent hover:border-red-600'
                   }`}
                 >
                   {category}
@@ -274,26 +274,26 @@ export default function HomePage() {
             </div>
 
             {/* Articles */}
-            <div className="space-y-4">
+            <div className="space-y-6">
               {getDisplayedArticles().map((article) => (
-                <article key={article.id} className="bg-white rounded-lg shadow-sm border hover:shadow-md transition-shadow">
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <span className="inline-block bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                <article key={article.id} className="border-b border-gray-200 pb-6 hover:bg-gray-50 transition-colors">
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <span className="inline-block bg-red-600 text-white text-xs px-2 py-1 font-medium">
                         {article.category}
                       </span>
-                      <div className="flex items-center space-x-4 text-sm text-gray-500">
+                      <div className="flex items-center space-x-3 text-xs text-gray-500">
                         <div className="flex items-center space-x-1">
-                          <Eye className="h-4 w-4" />
+                          <Eye className="h-3 w-3" />
                           <span>{article.views}</span>
                         </div>
                         <div className="flex items-center space-x-1">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3 w-3" />
                           <span>{new Date(article.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
-                    <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
+                    <h2 className="text-xl font-bold font-serif text-gray-900 mb-2 leading-tight">
                       <button 
                         onClick={() => handleArticleClick(article)}
                         className="hover:text-red-600 transition-colors cursor-pointer text-left w-full"
@@ -301,16 +301,16 @@ export default function HomePage() {
                         {article.title}
                       </button>
                     </h2>
-                    <p className="text-gray-700 leading-relaxed">
-                      {article.content.length > 300 
-                        ? article.content.substring(0, 300) + '...'
+                    <p className="text-gray-700 leading-relaxed font-serif text-sm">
+                      {article.content.length > 200 
+                        ? article.content.substring(0, 200) + '...' 
                         : article.content
                       }
                     </p>
-                    {article.content.length > 300 && (
+                    {article.content.length > 200 && (
                       <button 
                         onClick={() => handleArticleClick(article)}
-                        className="text-red-600 hover:text-red-800 font-medium mt-2 inline-block"
+                        className="text-red-600 hover:text-red-800 font-medium mt-2 inline-block text-sm"
                       >
                         {getUIText('readMore', '더 읽기')} →
                       </button>
@@ -333,40 +333,41 @@ export default function HomePage() {
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Stats */}
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-              <div className="space-y-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{stats.todayCount}</div>
-                  <div className="text-sm text-gray-600">{getUIText('todayArticles', '오늘 작성')}</div>
+            <div className="border border-gray-200 p-4 mb-6">
+              <h3 className="font-bold font-serif text-lg mb-4 border-b border-gray-200 pb-2">통계</h3>
+              <div className="space-y-3">
+                <div className="border-b border-gray-100 pb-2">
+                  <div className="text-2xl font-bold text-red-600 font-serif">{stats.todayCount}</div>
+                  <div className="text-xs text-gray-600 uppercase tracking-wide">{getUIText('todayArticles', '오늘 작성')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{stats.todayViews}</div>
-                  <div className="text-sm text-gray-600">{getUIText('todayViews', '오늘 조회수')}</div>
+                <div className="border-b border-gray-100 pb-2">
+                  <div className="text-2xl font-bold text-red-600 font-serif">{stats.todayViews}</div>
+                  <div className="text-xs text-gray-600 uppercase tracking-wide">{getUIText('todayViews', '오늘 조회수')}</div>
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-gray-900">{stats.totalCount}</div>
-                  <div className="text-sm text-gray-600">{getUIText('totalArticles', '전체 기사')}</div>
+                <div>
+                  <div className="text-2xl font-bold text-red-600 font-serif">{stats.totalCount}</div>
+                  <div className="text-xs text-gray-600 uppercase tracking-wide">{getUIText('totalArticles', '전체 기사')}</div>
                 </div>
               </div>
             </div>
 
             {/* Write Button */}
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+            <div className="border border-gray-200 p-4 mb-6">
               <button
                 onClick={() => setShowForm(true)}
-                className="w-full bg-red-600 text-white px-4 py-3 rounded-md hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+                className="w-full bg-red-600 text-white px-4 py-3 font-medium hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
               >
-                <PlusCircle className="h-5 w-5" />
-                <span>{getUIText('writeNew', '새 기사 작성')}</span>
+                <PlusCircle className="h-4 w-4" />
+                <span className="text-sm">{getUIText('writeNew', '새 기사 작성')}</span>
               </button>
             </div>
 
             {/* About */}
-            <div className="bg-white rounded-lg shadow-sm border p-6">
-              <h3 className="font-bold text-lg mb-3">
+            <div className="border border-gray-200 p-4">
+              <h3 className="font-bold font-serif text-lg mb-3 border-b border-gray-200 pb-2">
                 {getUIText('about', '소개')}
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-xs leading-relaxed">
                 {getUIText('aboutText', '익명으로 뉴스와 의견을 공유할 수 있는 플랫폼입니다. 회원가입 없이 누구나 자유롭게 기사를 작성하고 읽을 수 있습니다.')}
               </p>
             </div>
