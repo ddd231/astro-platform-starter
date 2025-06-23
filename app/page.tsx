@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { PlusCircle, Newspaper, Eye, Calendar, Globe } from 'lucide-react'
+import { PlusCircle, Newspaper, Eye, Calendar, Globe, X } from 'lucide-react'
 import { detectLocation, translateText, getUITranslations } from '../lib/translation'
 
 interface Article {
@@ -16,6 +16,7 @@ interface Article {
 export default function HomePage() {
   const [articles, setArticles] = useState<Article[]>([])
   const [showForm, setShowForm] = useState(false)
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
@@ -119,6 +120,11 @@ export default function HomePage() {
       article.id === id ? { ...article, views: article.views + 1 } : article
     )
     saveArticles(updatedArticles)
+  }
+
+  const handleArticleClick = (article: Article) => {
+    incrementViews(article.id)
+    setSelectedArticle(article)
   }
 
   const getDisplayedArticles = () => {
@@ -306,17 +312,12 @@ export default function HomePage() {
                       </div>
                     </div>
                     <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
-                      <a 
-                        href={`/article/${article.id}`}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          incrementViews(article.id)
-                          window.open(`/article/${article.id}`, '_blank')
-                        }}
-                        className="hover:text-red-600 transition-colors cursor-pointer"
+                      <button 
+                        onClick={() => handleArticleClick(article)}
+                        className="hover:text-red-600 transition-colors cursor-pointer text-left"
                       >
                         {article.title}
-                      </a>
+                      </button>
                     </h2>
                     <p className="text-gray-700 leading-relaxed">
                       {article.content.length > 300 
@@ -325,17 +326,12 @@ export default function HomePage() {
                       }
                     </p>
                     {article.content.length > 300 && (
-                      <a 
-                        href={`/article/${article.id}`}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          incrementViews(article.id)
-                          window.open(`/article/${article.id}`, '_blank')
-                        }}
+                      <button 
+                        onClick={() => handleArticleClick(article)}
                         className="text-red-600 hover:text-red-800 font-medium mt-2 inline-block"
                       >
                         {getUIText('readMore', '더 읽기')} →
-                      </a>
+                      </button>
                     )}
                   </div>
                 </article>
@@ -377,6 +373,52 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* Article Detail Modal */}
+      {selectedArticle && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center space-x-4">
+                  <span className="inline-block bg-red-600 text-white text-sm px-3 py-1 rounded-full">
+                    {translatedArticles[selectedArticle.id]?.category || selectedArticle.category}
+                  </span>
+                  <div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <div className="flex items-center space-x-1">
+                      <Eye className="h-4 w-4" />
+                      <span>{selectedArticle.views}</span>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <Calendar className="h-4 w-4" />
+                      <span>{new Date(selectedArticle.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setSelectedArticle(null)}
+                  className="text-gray-500 hover:text-gray-700 p-2"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+
+              {/* Article Title */}
+              <h1 className="text-3xl font-bold text-gray-900 mb-6 leading-tight">
+                {translatedArticles[selectedArticle.id]?.title || selectedArticle.title}
+              </h1>
+
+              {/* Article Content */}
+              <div className="prose prose-lg max-w-none">
+                <div className="text-lg text-gray-800 leading-relaxed whitespace-pre-wrap">
+                  {translatedArticles[selectedArticle.id]?.content || selectedArticle.content}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
