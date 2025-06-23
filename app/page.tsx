@@ -190,24 +190,6 @@ export default function HomePage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-3">
-            {/* Stats */}
-            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{stats.todayCount}</div>
-                  <div className="text-sm text-gray-600">{getUIText('todayArticles', '오늘 작성')}</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{stats.todayViews}</div>
-                  <div className="text-sm text-gray-600">{getUIText('todayViews', '오늘 조회수')}</div>
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{stats.totalCount}</div>
-                  <div className="text-sm text-gray-600">{getUIText('totalArticles', '전체 기사')}</div>
-                </div>
-              </div>
-            </div>
-
             {/* Article Form */}
             {showForm && (
               <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
@@ -314,7 +296,7 @@ export default function HomePage() {
                     <h2 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
                       <button 
                         onClick={() => handleArticleClick(article)}
-                        className="hover:text-red-600 transition-colors cursor-pointer text-left"
+                        className="hover:text-red-600 transition-colors cursor-pointer text-left w-full"
                       >
                         {article.title}
                       </button>
@@ -350,6 +332,24 @@ export default function HomePage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
+            {/* Stats */}
+            <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{stats.todayCount}</div>
+                  <div className="text-sm text-gray-600">{getUIText('todayArticles', '오늘 작성')}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{stats.todayViews}</div>
+                  <div className="text-sm text-gray-600">{getUIText('todayViews', '오늘 조회수')}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-gray-900">{stats.totalCount}</div>
+                  <div className="text-sm text-gray-600">{getUIText('totalArticles', '전체 기사')}</div>
+                </div>
+              </div>
+            </div>
+
             {/* Write Button */}
             <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
               <button
