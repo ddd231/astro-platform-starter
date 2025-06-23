@@ -186,10 +186,16 @@ export default function HomePage() {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="max-w-6xl mx-auto px-3 py-2">
+        <div className="grid grid-cols-12 gap-4">
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="col-span-12 lg:col-span-8">
+            {/* What's News Style Header */}
+            <div className="border-t-4 border-black mb-4">
+              <h2 className="text-lg font-bold bg-black text-white px-2 py-1 inline-block">
+                WHAT'S NEWS
+              </h2>
+            </div>
             {/* Article Form */}
             {showForm && (
               <div className="border-b border-gray-200 pb-6 mb-6">
@@ -257,15 +263,15 @@ export default function HomePage() {
             )}
 
             {/* Category Filter */}
-            <div className="flex flex-wrap gap-1 mb-6 border-b border-gray-200 pb-4">
+            <div className="flex flex-wrap gap-2 mb-4 pb-2 border-b border-gray-300">
               {categories.map(category => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1 text-sm font-medium transition-colors ${
+                  className={`px-2 py-1 text-xs font-bold uppercase tracking-wide transition-colors ${
                     selectedCategory === category
-                      ? 'bg-red-600 text-white'
-                      : 'text-gray-700 hover:text-red-600 border-b-2 border-transparent hover:border-red-600'
+                      ? 'bg-black text-white'
+                      : 'text-gray-800 hover:bg-gray-100'
                   }`}
                 >
                   {category}
@@ -274,47 +280,38 @@ export default function HomePage() {
             </div>
 
             {/* Articles */}
-            <div className="space-y-6">
-              {getDisplayedArticles().map((article) => (
-                <article key={article.id} className="border-b border-gray-200 pb-6 hover:bg-gray-50 transition-colors">
-                  <div className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <span className="inline-block bg-red-600 text-white text-xs px-2 py-1 font-medium">
-                        {article.category}
-                      </span>
-                      <div className="flex items-center space-x-3 text-xs text-gray-500">
-                        <div className="flex items-center space-x-1">
-                          <Eye className="h-3 w-3" />
-                          <span>{article.views}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <Calendar className="h-3 w-3" />
+            <div className="space-y-4">
+              {getDisplayedArticles().map((article, index) => (
+                <article key={article.id} className="border-b border-gray-300 pb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 text-center">
+                      <span className="text-xs font-bold text-gray-600">{index + 1}</span>
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                          {article.category}
+                        </span>
+                        <div className="flex items-center space-x-2 text-xs text-gray-500">
+                          <span>{article.views} views</span>
                           <span>{new Date(article.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
+                      <h3 className="text-sm font-bold leading-tight mb-2">
+                        <button 
+                          onClick={() => handleArticleClick(article)}
+                          className="hover:underline text-left"
+                        >
+                          {article.title}
+                        </button>
+                      </h3>
+                      <p className="text-xs text-gray-700 leading-relaxed">
+                        {article.content.length > 120 
+                          ? article.content.substring(0, 120) + '...' 
+                          : article.content
+                        }
+                      </p>
                     </div>
-                    <h2 className="text-xl font-bold font-serif text-gray-900 mb-2 leading-tight">
-                      <button 
-                        onClick={() => handleArticleClick(article)}
-                        className="hover:text-red-600 transition-colors cursor-pointer text-left w-full"
-                      >
-                        {article.title}
-                      </button>
-                    </h2>
-                    <p className="text-gray-700 leading-relaxed font-serif text-sm">
-                      {article.content.length > 200 
-                        ? article.content.substring(0, 200) + '...' 
-                        : article.content
-                      }
-                    </p>
-                    {article.content.length > 200 && (
-                      <button 
-                        onClick={() => handleArticleClick(article)}
-                        className="text-red-600 hover:text-red-800 font-medium mt-2 inline-block text-sm"
-                      >
-                        {getUIText('readMore', '더 읽기')} →
-                      </button>
-                    )}
                   </div>
                 </article>
               ))}
@@ -331,44 +328,45 @@ export default function HomePage() {
           </div>
 
           {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {/* Stats */}
-            <div className="border border-gray-200 p-4 mb-6">
-              <h3 className="font-bold font-serif text-lg mb-4 border-b border-gray-200 pb-2">통계</h3>
-              <div className="space-y-3">
-                <div className="border-b border-gray-100 pb-2">
-                  <div className="text-2xl font-bold text-red-600 font-serif">{stats.todayCount}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">{getUIText('todayArticles', '오늘 작성')}</div>
+          <div className="col-span-12 lg:col-span-4">
+            {/* Stats - What's News Style */}
+            <div className="border-t-4 border-black mb-4">
+              <h3 className="text-sm font-bold bg-black text-white px-2 py-1 inline-block mb-3">
+                TODAY'S STATISTICS
+              </h3>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between border-b border-gray-200 pb-1">
+                  <span className="font-bold">오늘 작성:</span>
+                  <span className="font-bold">{stats.todayCount}</span>
                 </div>
-                <div className="border-b border-gray-100 pb-2">
-                  <div className="text-2xl font-bold text-red-600 font-serif">{stats.todayViews}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">{getUIText('todayViews', '오늘 조회수')}</div>
+                <div className="flex justify-between border-b border-gray-200 pb-1">
+                  <span className="font-bold">오늘 조회수:</span>
+                  <span className="font-bold">{stats.todayViews}</span>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-red-600 font-serif">{stats.totalCount}</div>
-                  <div className="text-xs text-gray-600 uppercase tracking-wide">{getUIText('totalArticles', '전체 기사')}</div>
+                <div className="flex justify-between">
+                  <span className="font-bold">전체 기사:</span>
+                  <span className="font-bold">{stats.totalCount}</span>
                 </div>
               </div>
             </div>
 
             {/* Write Button */}
-            <div className="border border-gray-200 p-4 mb-6">
+            <div className="mb-4">
               <button
                 onClick={() => setShowForm(true)}
-                className="w-full bg-red-600 text-white px-4 py-3 font-medium hover:bg-red-700 transition-colors flex items-center justify-center space-x-2"
+                className="w-full bg-black text-white px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors"
               >
-                <PlusCircle className="h-4 w-4" />
-                <span className="text-sm">{getUIText('writeNew', '새 기사 작성')}</span>
+                + 새 기사 작성
               </button>
             </div>
 
             {/* About */}
-            <div className="border border-gray-200 p-4">
-              <h3 className="font-bold font-serif text-lg mb-3 border-b border-gray-200 pb-2">
-                {getUIText('about', '소개')}
+            <div className="border-t-2 border-gray-300 pt-3">
+              <h3 className="text-xs font-bold uppercase tracking-wide mb-2">
+                ABOUT THIS SITE
               </h3>
-              <p className="text-gray-600 text-xs leading-relaxed">
-                {getUIText('aboutText', '익명으로 뉴스와 의견을 공유할 수 있는 플랫폼입니다. 회원가입 없이 누구나 자유롭게 기사를 작성하고 읽을 수 있습니다.')}
+              <p className="text-xs text-gray-700 leading-relaxed">
+                익명으로 뉴스와 의견을 공유할 수 있는 플랫폼입니다. 회원가입 없이 누구나 자유롭게 기사를 작성하고 읽을 수 있습니다.
               </p>
             </div>
           </div>
