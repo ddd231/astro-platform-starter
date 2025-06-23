@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react'
 import { PlusCircle, Newspaper, Eye, Calendar, Globe, X } from 'lucide-react'
 import { detectLocation, translateText, getUITranslations } from '../lib/translation'
+import { ADSENSE_CONFIG } from '../lib/adsense'
+import AdSense from '../components/AdSense'
 
 interface Article {
   id: string
@@ -16,7 +18,6 @@ interface Article {
 export default function HomePage() {
   const [articles, setArticles] = useState<Article[]>([])
   const [showForm, setShowForm] = useState(false)
-  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
   const [newArticle, setNewArticle] = useState({
     title: '',
     content: '',
@@ -122,11 +123,6 @@ export default function HomePage() {
     saveArticles(updatedArticles)
   }
 
-  const handleArticleClick = (article: Article) => {
-    incrementViews(article.id)
-    setSelectedArticle(article)
-  }
-
   const getDisplayedArticles = () => {
     const filtered = selectedCategory === '전체' 
       ? articles 
@@ -186,16 +182,20 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Top Banner Ad */}
+      <div className="max-w-7xl mx-auto px-6 py-2">
+        <AdSense 
+          slot={ADSENSE_CONFIG.SLOTS.TOP_BANNER}
+          style={ADSENSE_CONFIG.STYLES.BANNER}
+          format={ADSENSE_CONFIG.FORMATS.HORIZONTAL}
+          className="mb-4"
+        />
+      </div>
+
       <div className="max-w-6xl mx-auto px-3 py-2">
         <div className="grid grid-cols-12 gap-4">
           {/* Main Content */}
           <div className="col-span-12 lg:col-span-8">
-            {/* What's News Style Header */}
-            <div className="border-t-4 border-black mb-4">
-              <h2 className="text-lg font-bold bg-black text-white px-2 py-1 inline-block">
-                WHAT'S NEWS
-              </h2>
-            </div>
             {/* Article Form */}
             {showForm && (
               <div className="border-b border-gray-200 pb-6 mb-6">
@@ -282,38 +282,63 @@ export default function HomePage() {
             {/* Articles */}
             <div className="space-y-4">
               {getDisplayedArticles().map((article, index) => (
-                <article key={article.id} className="border-b border-gray-300 pb-4">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 text-center">
-                      <span className="text-xs font-bold text-gray-600">{index + 1}</span>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold uppercase tracking-wide text-gray-600">
-                          {article.category}
-                        </span>
-                        <div className="flex items-center space-x-2 text-xs text-gray-500">
-                          <span>{article.views} views</span>
-                          <span>{new Date(article.createdAt).toLocaleDateString()}</span>
-                        </div>
+                <div key={article.id}>
+                  <article className="border-b border-gray-300 pb-4">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-8 text-center">
+                        <span className="text-xs font-bold text-gray-600">{index + 1}</span>
                       </div>
-                      <h3 className="text-sm font-bold leading-tight mb-2">
-                        <button 
-                          onClick={() => handleArticleClick(article)}
-                          className="hover:underline text-left"
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs font-bold uppercase tracking-wide text-gray-600">
+                            {article.category}
+                          </span>
+                          <div className="flex items-center space-x-2 text-xs text-gray-500">
+                            <span>{article.views} views</span>
+                            <span>{new Date(article.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <h3 className="text-sm font-bold leading-tight mb-2">
+                          <a 
+                            href={`/article/${article.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => incrementViews(article.id)}
+                            className="hover:underline text-left cursor-pointer"
+                          >
+                            {article.title}
+                          </a>
+                        </h3>
+                        <a 
+                          href={`/article/${article.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => incrementViews(article.id)}
+                          className="cursor-pointer"
                         >
-                          {article.title}
-                        </button>
-                      </h3>
-                      <p className="text-xs text-gray-700 leading-relaxed">
-                        {article.content.length > 120 
-                          ? article.content.substring(0, 120) + '...' 
-                          : article.content
-                        }
-                      </p>
+                          <p className="text-xs text-gray-700 leading-relaxed hover:text-gray-900">
+                            {article.content.length > 120 
+                              ? article.content.substring(0, 120) + '...' 
+                              : article.content
+                            }
+                          </p>
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                  
+                  {/* Insert ad after every 5th article */}
+                  {(index + 1) % 5 === 0 && (
+                    <div className="my-6">
+                      <AdSense 
+                        slot={ADSENSE_CONFIG.SLOTS.CONTENT_RECTANGLE}
+                        style={ADSENSE_CONFIG.STYLES.RECTANGLE}
+                        format={ADSENSE_CONFIG.FORMATS.RECTANGLE}
+                        className="border-t border-b border-gray-200 py-4"
+                      />
+                    </div>
+                  )}
+                </div>
               ))}
               
               {getDisplayedArticles().length === 0 && (
@@ -329,8 +354,38 @@ export default function HomePage() {
 
           {/* Sidebar */}
           <div className="col-span-12 lg:col-span-4">
-            {/* Stats - What's News Style */}
-            <div className="border-t-4 border-black mb-4">
+            {/* Write Button */}
+            <div className="mb-4">
+              <button
+                onClick={() => setShowForm(true)}
+                className="w-full bg-black text-white px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors"
+              >
+                + 새 기사 작성
+              </button>
+            </div>
+
+            {/* Sidebar Ad */}
+            <div className="mb-4">
+              <AdSense 
+                slot={ADSENSE_CONFIG.SLOTS.SIDEBAR_VERTICAL}
+                style={ADSENSE_CONFIG.STYLES.SIDEBAR}
+                format={ADSENSE_CONFIG.FORMATS.VERTICAL}
+                className="border border-gray-200 p-2"
+              />
+            </div>
+
+            {/* About */}
+            <div className="border-t-2 border-gray-300 pt-3 mb-4">
+              <h3 className="text-xs font-bold uppercase tracking-wide mb-2">
+                ABOUT THIS SITE
+              </h3>
+              <p className="text-xs text-gray-700 leading-relaxed">
+                익명으로 뉴스와 의견을 공유할 수 있는 플랫폼입니다. 회원가입 없이 누구나 자유롭게 기사를 작성하고 읽을 수 있습니다.
+              </p>
+            </div>
+
+            {/* Stats moved to bottom */}
+            <div className="border-t-4 border-black">
               <h3 className="text-sm font-bold bg-black text-white px-2 py-1 inline-block mb-3">
                 TODAY'S STATISTICS
               </h3>
@@ -349,75 +404,19 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-
-            {/* Write Button */}
-            <div className="mb-4">
-              <button
-                onClick={() => setShowForm(true)}
-                className="w-full bg-black text-white px-3 py-2 text-xs font-bold uppercase tracking-wide hover:bg-gray-800 transition-colors"
-              >
-                + 새 기사 작성
-              </button>
-            </div>
-
-            {/* About */}
-            <div className="border-t-2 border-gray-300 pt-3">
-              <h3 className="text-xs font-bold uppercase tracking-wide mb-2">
-                ABOUT THIS SITE
-              </h3>
-              <p className="text-xs text-gray-700 leading-relaxed">
-                익명으로 뉴스와 의견을 공유할 수 있는 플랫폼입니다. 회원가입 없이 누구나 자유롭게 기사를 작성하고 읽을 수 있습니다.
-              </p>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Article Detail Modal */}
-      {selectedArticle && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              {/* Modal Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center space-x-4">
-                  <span className="inline-block bg-red-600 text-white text-sm px-3 py-1 rounded-full">
-                    {translatedArticles[selectedArticle.id]?.category || selectedArticle.category}
-                  </span>
-                  <div className="flex items-center space-x-4 text-sm text-gray-500">
-                    <div className="flex items-center space-x-1">
-                      <Eye className="h-4 w-4" />
-                      <span>{selectedArticle.views}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Calendar className="h-4 w-4" />
-                      <span>{new Date(selectedArticle.createdAt).toLocaleDateString()}</span>
-                    </div>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setSelectedArticle(null)}
-                  className="text-gray-500 hover:text-gray-700 p-2"
-                >
-                  <X className="h-6 w-6" />
-                </button>
-              </div>
-
-              {/* Article Title */}
-              <h1 className="text-3xl font-bold text-gray-900 mb-6 leading-tight">
-                {translatedArticles[selectedArticle.id]?.title || selectedArticle.title}
-              </h1>
-
-              {/* Article Content */}
-              <div className="prose prose-lg max-w-none">
-                <div className="text-lg text-gray-800 leading-relaxed whitespace-pre-wrap">
-                  {translatedArticles[selectedArticle.id]?.content || selectedArticle.content}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Bottom Banner Ad */}
+      <div className="max-w-7xl mx-auto px-6 py-4 border-t border-gray-200">
+        <AdSense 
+          slot="4567890123"
+          style={{ display: 'block', textAlign: 'center' }}
+          format="horizontal"
+          className="mb-2"
+        />
+      </div>
     </div>
   )
 }
