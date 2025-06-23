@@ -13,6 +13,12 @@ interface Article {
   views: number
 }
 
+// Static params generation for static export
+export function generateStaticParams() {
+  // Return empty array for now - articles will be handled client-side
+  return []
+}
+
 export default function ArticlePage({ params }: { params: { id: string } }) {
   const [article, setArticle] = useState<Article | null>(null)
   const [userLanguage, setUserLanguage] = useState('ko')
